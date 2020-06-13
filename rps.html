@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="rps.css">
+    </head>
+    <body>
+        <div class="main">
+            <div id="header">
+                <header><h1>Play Rock, Paper, Scissors!</h1></header>
+                <h2></h2>
+            </div>
+            <div id="button-container">
+                <div id="buttons">
+                    <button id="Rock" class ="choice-button" onclick="playRound('Rock', computerPlay())">Rock</button>
+                    <button id="Paper" class ="choice-button" onclick="playRound('Paper', computerPlay())">Paper</button>
+                    <button id="Scissors" class ="choice-button" onclick="playRound('Scissors', computerPlay())">Scissors</button>
+                </div>
+            </div>
+            <section class="score-container">
+                <table>
+                    <tr>
+                        <caption>Score</caption>
+                    </tr>
+                    <tr>
+                        <th width="30%">Round</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td width="30%">1</td>
+                        <td id="first-result"></td>
+                    </tr>
+                    <tr id="player-row">
+                        <th width="30%">Player Score</th>
+                        <td id="player-result">0</td>
+                    </tr>
+                    <tr id="computer-row">
+                        <th width="30%">Computer Score</th>
+                        <td id="comp-result">0</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+        <script>
+            let roundNum = 1;
+            let playerScore = 0;
+            let compScore = 0;
+
+            function playRound(player, computer) {
+                let playerselect = player.toLowerCase();
+                let compselect = computer.toLowerCase();
+
+                if (playerselect === compselect) {
+                    alert("You tied!");
+                    tied();
+                }
+                else {
+                    switch(playerselect) {
+                        case "rock":
+                            if(compselect === "paper") {
+                                Lose(compselect, playerselect);
+                            }
+                            else Win(compselect, playerselect);
+                            break;
+                        case "paper":
+                            if(compselect === "scissors") {
+                                Lose(compselect, playerselect);
+                            }
+                            else Win(compselect, playerselect);
+                            break;
+                        case "scissors":
+                            if(compselect === "rock") {
+                                Lose(compselect, playerselect);
+                            }
+                            else Win(compselect, playerselect);
+                            break;
+                    }
+                }
+            }
+            function computerPlay() {
+                let choices = ["Rock", "Paper", "Scissors"];
+                return choices[Math.floor(Math.random() * 3)];
+            }
+
+            function tied() {
+                if(roundNum == 1) {
+                    let result = document.getElementById('first-result');
+                    result.innerHTML = "You won!";
+                    result.style.fontSize = '20px';
+                    result.style.fontWeight = 'Bold';
+                    result.style.backgroundColor = 'green';
+                    
+                }
+                else {
+                    let table = document.querySelector('table');
+                    let row = table.insertRow(roundNum + 1);
+                    let roundCell = document.createElement('td');
+                    let resultCell = document.createElement('td');
+
+                    roundCell.innerHTML = roundNum;
+                    resultCell.innerHTML = "Tied!";
+                    resultCell.style.fontSize = '20px';
+                    resultCell.style.fontWeight = 'Bold';
+
+                    row.appendChild(roundCell);
+                    row.appendChild(resultCell);
+
+                    roundNum++;
+                }
+                
+            }
+            function Win(compselect, playerselect) {
+                alert("You won! " + playerselect + " beats " + compselect + "!");
+                
+                if(roundNum == 1) {
+                    let result = document.getElementById('first-result');
+                    result.innerHTML = "You won!";
+                    result.style.fontSize = '20px';
+                    result.style.fontWeight = 'Bold';
+                    result.style.backgroundColor = 'green';
+                    
+                }
+                else {
+                    let table = document.querySelector('table');
+                    let row = table.insertRow(roundNum + 1);
+                    let roundCell = document.createElement('td');
+                    let resultCell = document.createElement('td');
+
+                    row.className = "added-rows";
+                    roundCell.innerHTML = roundNum;
+                    resultCell.innerHTML = "You won!";
+                    resultCell.style.fontSize = '20px';
+                    resultCell.style.fontWeight = 'Bold';
+                    resultCell.style.backgroundColor = 'green';
+
+                    row.appendChild(roundCell);
+                    row.appendChild(resultCell);
+                }
+                roundNum++;
+                playerScore++;
+
+                let score = document.getElementById('player-result');
+                score.innerHTML = playerScore;
+
+                if (playerScore == 3) {
+                    gameOver('won the game!', 'green');
+                }
+
+            }
+            function Lose(compselect, playerselect) {
+                alert("You lost! " + compselect + " beats " + playerselect + "!");
+
+                if(roundNum == 1) {
+                    let result = document.getElementById('first-result');
+                    result.innerHTML = "You lost!";
+                    result.style.fontSize = '20px';
+                    result.style.fontWeight = 'Bold';
+                    result.style.backgroundColor = 'red';
+                }
+                else {
+                    let table = document.querySelector('table');
+                    let row = table.insertRow(roundNum + 1);
+                    let roundCell = document.createElement('td');
+                    let resultCell = document.createElement('td');
+
+                    row.className = "added-rows";
+                    roundCell.innerHTML = roundNum;
+                    resultCell.innerHTML = "You lost!";
+                    resultCell.style.fontSize = '20px';
+                    resultCell.style.fontWeight = 'Bold';
+                    resultCell.style.backgroundColor = 'red';
+
+                    row.appendChild(roundCell);
+                    row.appendChild(resultCell);
+                }
+                roundNum++;
+                compScore++;
+
+                let score = document.getElementById('comp-result');
+                score.innerHTML = compScore;
+
+                if (compScore == 3) {
+                    gameOver('lost the game!', 'red');
+                }
+            }
+
+            function gameOver(result, textcolor) {
+                var heading = document.querySelector('h2');
+                heading.innerHTML = "You " + result;
+                heading.style.color = textcolor;
+
+                let choices = document.getElementsByClassName("choice-button");
+                choices.disabled = true;
+
+                let button = document.createElement("button");
+                button.innerHTML = "New Game";
+                button.style.width = "200px";
+                button.style.height = "50px";
+                button.style.margin = "1em auto 1em auto";
+                button.addEventListener("click", newGame());
+
+                document.body.appendChild(button);
+            }
+
+            function newGame() {
+                playerScore = 0;
+                compScore = 0;
+
+                let choices = document.getElementsByClassName("choice-button");
+                choices.disabled = false;
+
+                let rows = document.getElementsByClassName("added-rows");
+                rows.remove();
+
+
+            }
+        </script>
+    </body>
+</html>
